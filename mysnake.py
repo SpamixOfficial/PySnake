@@ -140,6 +140,7 @@ class App():
             pyxel.text(5, 53, f"Score: {str(self.score)}", 0)
         if self.death:
             pyxel.cls(8)
+            pyxel.text(17, 5, "[Q]uit", 5)
             if self.dreason == "You ate your own tail!":
                 pyxel.text(7, 10, "You ate your", 1)
                 pyxel.text(12, 18, "own tail!", 1)
