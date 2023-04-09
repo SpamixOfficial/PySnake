@@ -17,7 +17,7 @@ class App():
             self.apx = random.randrange(0, 57)
             self.apy = random.randrange(0, 48)
 
-        pyxel.load("playing1.pyxres")
+        pyxel.load("music.pyxres")
         #pyxel.image(0).load(0, 0, "snake_background.png")
         #pyxel.play(0, [0, 1],loop=True)
         #pyxel.play(1, [1, 2],loop=True)
@@ -70,6 +70,7 @@ class App():
                         if not self.death:
                             pyxel.stop()
                             #pyxel.playm(1, loop=True)
+                            pyxel.play(0, 15)
                             self.dreason = "You ate your own tail!"
                         self.death = True
                         break
@@ -115,12 +116,14 @@ class App():
                 if not self.death:
                     pyxel.stop()
                     #pyxel.playm(1, loop=True)
+                    pyxel.play(0, 15)
                     self.dreason = "You hit a wall"
                 self.death = True
             elif self.y > 49 or self.y < 0:
                 if not self.death:
                     pyxel.stop()
                     #pyxel.playm(1, loop=True)
+                    pyxel.play(0, 15)
                     self.dreason = "You hit a wall"
                 self.death = True
         
