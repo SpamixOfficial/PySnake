@@ -3,6 +3,7 @@ import pyxel, random
 class App():
     def __init__(self):
         pyxel.init(60, 60, title="PySnake", fps=20)
+        self.menu = True
         self.restart = False
         self.tail = []
         self.score = 0
@@ -13,11 +14,14 @@ class App():
         self.apx = random.randrange(0, 57)
         self.apy = random.randrange(0, 48)
         self.dreason = ""
+        self.normal = False
+        self.unlimited = False
         if self.apx == self.x and self.apy == self.y:
             self.apx = random.randrange(0, 57)
             self.apy = random.randrange(0, 48)
 
-        pyxel.load("music.pyxres")
+        pyxel.load("assets/music.pyxres", image=False)
+        pyxel.image(0).load(0, 0, "assets/unlimited.png")
         #pyxel.image(0).load(0, 0, "snake_background.png")
         #pyxel.play(0, [0, 1],loop=True)
         #pyxel.play(1, [1, 2],loop=True)
@@ -30,8 +34,16 @@ class App():
         # Controls that should not be disabled at death:
         if pyxel.btnp(pyxel.KEY_Q):
             pyxel.quit()
-        elif pyxel.btnp(pyxel.KEY_R):
+        elif pyxel.btnp(pyxel.KEY_R) and not self.menu:
             self.restart = True
+        
+        if self.menu:
+            if pyxel.btnp(pyxel.KEY_N):
+                self.normal = True
+                self.menu = False
+            elif pyxel.btnp(pyxel.KEY_U):
+                self.unlimited = True
+                self.menu = False
 
         # Restart script
         if self.restart:
@@ -49,7 +61,7 @@ class App():
             if self.apx == self.x and self.apy == self.y:
                 self.apx = random.randrange(0, 57)
                 self.apy = random.randrange(0, 48)
-        if not self.death:
+        if not self.death and not self.menu:
             #######################
             ## Colition Checking ##
             #######################
@@ -92,17 +104,28 @@ class App():
             elif pyxel.btn(pyxel.KEY_UP):
                 if not self.sdir == "down":
                     self.sdir = "up"
-            
-            if self.sdir == "right":
-                self.x = (self.x + 1)
-            elif self.sdir == "left":
-                self.x = (self.x - 1)
-            elif self.sdir == "down":
-                self.y = (self.y + 1)
-            elif self.sdir == "up":
-                self.y = (self.y - 1)
-            elif self.sdir == "stop":
-                pass
+            if self.normal:
+                if self.sdir == "right":
+                    self.x = (self.x + 1)
+                elif self.sdir == "left":
+                    self.x = (self.x - 1)
+                elif self.sdir == "down":
+                    self.y = (self.y + 1)
+                elif self.sdir == "up":
+                    self.y = (self.y - 1)
+                elif self.sdir == "stop":
+                    pass
+            elif self.unlimited:
+                if self.sdir == "right":
+                    self.x = (self.x + 1) % pyxel.width
+                elif self.sdir == "left":
+                    self.x = (self.x - 1) % pyxel.width
+                elif self.sdir == "down":
+                    self.y = (self.y + 1) % 50
+                elif self.sdir == "up":
+                    self.y = (self.y - 1) % 50
+                elif self.sdir == "stop":
+                    pass
 
             # Tail
             self.tail.insert(0, (self.x, self.y))
@@ -112,24 +135,26 @@ class App():
             ####################
             ## Death Checking ##
             ####################
-            if self.x > 60 or self.x < 0:
-                if not self.death:
-                    pyxel.stop()
-                    #pyxel.playm(1, loop=True)
-                    pyxel.play(0, 15)
-                    self.dreason = "You hit a wall"
-                self.death = True
-            elif self.y > 49 or self.y < 0:
-                if not self.death:
-                    pyxel.stop()
-                    #pyxel.playm(1, loop=True)
-                    pyxel.play(0, 15)
-                    self.dreason = "You hit a wall"
-                self.death = True
+            if self.normal:
+                if self.x > 60 or self.x < 0:
+                    if not self.death:
+                        pyxel.stop()
+                        #pyxel.playm(1, loop=True)
+                        pyxel.play(0, 15)
+                        self.dreason = "You hit a wall"
+                    self.death = True
+                elif self.y > 49 or self.y < 0:
+                    if not self.death:
+                        pyxel.stop()
+                        #pyxel.playm(1, loop=True)
+                        pyxel.play(0, 15)
+                        self.dreason = "You hit a wall"
+                    self.death = True
+
         
 
     def draw(self):
-        if not self.death:
+        if not self.death and not self.menu:
             pyxel.cls(0)
             #pyxel.blt(0, 0, 0, 0, 0, 60, 60)
             pyxel.rect(self.apx, self.apy, 2, 2, 8)
@@ -138,7 +163,7 @@ class App():
             pyxel.rect(self.x, self.y, 2, 2, 11)
             pyxel.rect(0, 50, 60, 20, 1)
             pyxel.text(5, 53, f"Score: {str(self.score)}", 0)
-        if self.death:
+        elif self.death and not self.menu:
             pyxel.cls(8)
             pyxel.text(17, 5, "[Q]uit", 5)
             if self.dreason == "You ate your own tail!":
@@ -149,5 +174,37 @@ class App():
             pyxel.text(2, 30, "Your score was", 1)
             pyxel.text((30 - ((2 * len(str(self.score))) - 1)), 40, f"{str(self.score)}", 3)
             pyxel.text(10, 50, "[R]estart", 5)
+        
+        if self.menu:
+            pyxel.cls(1)
+            pyxel.text(3, 1, "SPAMIXOFFICIAL", 5)
+            pyxel.text(3, 0, "SPAMIXOFFICIAL", 9)
+            pyxel.text(16, 10, "PySnake", 5)
+            pyxel.text(16, 9, "PySnake", 9)
+            pyxel.text(22, 21, "v1.0", 5)
+            pyxel.text(22, 20, "v1.0", 10)
+            
+            pyxel.text(34, 50, "[U]", 9)
+            pyxel.text(14, 50, "[N]", 9)
+            # Icons and coices
+            # Squares
+            pyxel.rectb(15, 35, 10, 10, 9)
+            pyxel.rectb(35, 35, 10, 10, 9)
+
+            # Normal Icon
+            pyxel.rect(17, 37, 2, 2, 9)
+            pyxel.rect(21, 37, 2, 2, 9)
+            pyxel.rect(17, 41, 1, 1, 9)
+            pyxel.rect(22, 41, 1, 1, 9)
+            pyxel.rect(17, 42, 6, 1, 9)
+
+            # Unlimited icon
+            pyxel.rect(36, 39, 1, 2, 9)
+            pyxel.rect(37, 38, 2, 1, 9)
+            pyxel.rect(37, 41, 2, 1, 9)
+            pyxel.rect(39, 39, 2, 2, 9)
+            pyxel.rect(41, 38, 2, 1, 9)
+            pyxel.rect(41, 41, 2, 1, 9)
+            pyxel.rect(43, 39, 1, 2, 9)
 
 App()
