@@ -21,7 +21,6 @@ class App():
             self.apy = random.randrange(0, 48)
 
         pyxel.load("assets/music.pyxres", image=False)
-        pyxel.image(0).load(0, 0, "assets/unlimited.png")
         #pyxel.image(0).load(0, 0, "snake_background.png")
         #pyxel.play(0, [0, 1],loop=True)
         #pyxel.play(1, [1, 2],loop=True)
