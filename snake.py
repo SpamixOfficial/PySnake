@@ -1,4 +1,25 @@
-import pyxel, random
+import pyxel, random, argparse
+
+version = 1.1
+
+parser = argparse.ArgumentParser(
+    prog="PySnake v1.1",
+    description="Snake rewritten in Python",
+    add_help=False
+)
+parser.add_argument('-v', "--version", help="Prints the version", action='store_true')
+parser.add_argument('-h', "--help", help="Prints out this help", action='store_true')
+args = parser.parse_args()
+
+if args.help:
+    f = open("assets/help.txt", 'r')
+    contents = f.read()
+    print(f"\n{contents}\n")
+    f.close()
+    quit()
+elif args.version:
+    print(f"\nPySnake Version: v{version}\n")
+    quit()
 
 class App():
     def __init__(self):
