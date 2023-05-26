@@ -5,6 +5,7 @@ class App():
         pyxel.init(60, 60, title="PySnake", fps=20)
         self.menu = True
         self.restart = False
+        self.funnymsg = 1000
         self.tail = []
         self.score = 0
         self.sdir = "stop"
@@ -79,10 +80,14 @@ class App():
                 for i in range(1, len(self.tail)):
                     if self.x == self.tail[i][0] and self.y == self.tail[i][1]:
                         if not self.death:
+                            self.funnymsg = random.randrange(0, 10)
                             pyxel.stop()
                             #pyxel.playm(1, loop=True)
                             pyxel.play(0, 15)
-                            self.dreason = "You ate your own tail!"
+                            if self.funnymsg == 5:
+                                self.dreason = "Snails."
+                            else:
+                                self.dreason = "You ate your own tail!"
                         self.death = True
                         break
 
@@ -137,17 +142,25 @@ class App():
             if self.normal:
                 if self.x > 60 or self.x < 0:
                     if not self.death:
+                        self.funnymsg = random.randrange(0, 10)
                         pyxel.stop()
                         #pyxel.playm(1, loop=True)
                         pyxel.play(0, 15)
-                        self.dreason = "You hit a wall"
+                        if self.funnymsg == 5:
+                            self.dreason = "Snails."
+                        else:
+                            self.dreason = "You hit a wall"
                     self.death = True
                 elif self.y > 49 or self.y < 0:
                     if not self.death:
+                        self.funnymsg = random.randrange(0, 10)
                         pyxel.stop()
                         #pyxel.playm(1, loop=True)
                         pyxel.play(0, 15)
-                        self.dreason = "You hit a wall"
+                        if self.funnymsg == 5:
+                            self.dreason = "Snails."
+                        else:
+                            self.dreason = "You hit a wall"
                     self.death = True
 
         
