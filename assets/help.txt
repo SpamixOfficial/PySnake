@@ -1,0 +1,10 @@
+usage: snake.py [options]
+
+PySnake v1.1 Help
+
+options:
+  -h, --help    | Prints out this help
+  -v, --version | Prints the version of the game
+
+
+SpamixOfficial 2023, spamixproducer@gmail.com
