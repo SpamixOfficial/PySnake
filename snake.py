@@ -101,7 +101,7 @@ class App():
                 for i in range(1, len(self.tail)):
                     if self.x == self.tail[i][0] and self.y == self.tail[i][1]:
                         if not self.death:
-                            self.funnymsg = random.randrange(0, 10)
+                            self.funnymsg = random.randrange(0, 1000)
                             pyxel.stop()
                             #pyxel.playm(1, loop=True)
                             pyxel.play(0, 15)
@@ -163,7 +163,7 @@ class App():
             if self.normal:
                 if self.x > 60 or self.x < 0:
                     if not self.death:
-                        self.funnymsg = random.randrange(0, 10)
+                        self.funnymsg = random.randrange(0, 1000)
                         pyxel.stop()
                         #pyxel.playm(1, loop=True)
                         pyxel.play(0, 15)
@@ -174,7 +174,7 @@ class App():
                     self.death = True
                 elif self.y > 49 or self.y < 0:
                     if not self.death:
-                        self.funnymsg = random.randrange(0, 10)
+                        self.funnymsg = random.randrange(0, 1000)
                         pyxel.stop()
                         #pyxel.playm(1, loop=True)
                         pyxel.play(0, 15)
