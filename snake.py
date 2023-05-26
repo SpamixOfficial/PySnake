@@ -214,8 +214,8 @@ class App():
             pyxel.text(3, 0, "SPAMIXOFFICIAL", 9)
             pyxel.text(16, 10, "PySnake", 5)
             pyxel.text(16, 9, "PySnake", 9)
-            pyxel.text(22, 21, "v1.0", 5)
-            pyxel.text(22, 20, "v1.0", 10)
+            pyxel.text(22, 21, "v1.1", 5)
+            pyxel.text(22, 20, "v1.1", 10)
             
             pyxel.text(34, 50, "[U]", 9)
             pyxel.text(14, 50, "[N]", 9)
