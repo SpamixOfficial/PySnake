@@ -1,7 +1,8 @@
-import pyxel, random, argparse
+import pyxel, random, argparse, json, time
 
 version = 1.1
 
+configfile = "assets/config.json"
 parser = argparse.ArgumentParser(
     prog="PySnake v1.1",
     description="Snake rewritten in Python",
@@ -9,7 +10,20 @@ parser = argparse.ArgumentParser(
 )
 parser.add_argument('-v', "--version", help="Prints the version", action='store_true')
 parser.add_argument('-h', "--help", help="Prints out this help", action='store_true')
+parser.add_argument('-r', "--reset", help="Reset all scores", action='store_true')
 args = parser.parse_args()
+
+with open(configfile) as file:
+    data = json.load(file)
+
+if args.reset:
+    data['highscore'] = [0, 0, 0, 0, 0]
+    data['playtime'] = 0
+    with open(configfile, w) as file:
+        json.dump(data, file, indent=4)
+    print("Data has been reset to default")
+    quit()
+    
 
 if args.help:
     f = open("assets/help.txt", 'r')
@@ -20,6 +34,20 @@ if args.help:
 elif args.version:
     print(f"\nPySnake Version: v{version}\n")
     quit()
+
+start_time = time.time()
+
+def get_script_uptime():
+    # Calculate the elapsed time since the script started
+    uptime_seconds = time.time() - start_time
+
+    # Convert the uptime to a human-readable format
+    uptime = time.strftime('%S', time.gmtime(uptime_seconds))
+    
+    if str(uptime[0]) == "0":
+        uptime = str(uptime)[1:]
+        uptime = int(uptime)
+    return uptime
 
 class App():
     def __init__(self):
@@ -54,6 +82,11 @@ class App():
 
         # Controls that should not be disabled at death:
         if pyxel.btnp(pyxel.KEY_Q):
+            uptime = get_script_uptime()
+            playtime = data['playtime'] + uptime
+            data['playtime'] = playtime
+            with open(configfile, "w") as file:
+                json.dump(data, file, indent=4)
             pyxel.quit()
         elif pyxel.btnp(pyxel.KEY_R) and not self.menu:
             self.restart = True

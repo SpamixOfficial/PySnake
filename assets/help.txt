@@ -5,6 +5,7 @@ PySnake v1.1 Help
 options:
   -h, --help    | Prints out this help
   -v, --version | Prints the version of the game
+  -r, --reset   | Reset all configs (This will reset all highscores and reset all playtime)
 
 
 SpamixOfficial 2023, spamixproducer@gmail.com
