@@ -2,7 +2,7 @@ import pyxel, random, argparse, json, time
 
 version = 1.1
 
-configfile = "assets/config.json"
+statsfile = "assets/stats.json"
 parser = argparse.ArgumentParser(
     prog="PySnake v1.1",
     description="Snake rewritten in Python",
@@ -11,18 +11,23 @@ parser = argparse.ArgumentParser(
 parser.add_argument('-v', "--version", help="Prints the version", action='store_true')
 parser.add_argument('-h', "--help", help="Prints out this help", action='store_true')
 parser.add_argument('-r', "--reset", help="Reset all scores", action='store_true')
+parser.add_argument('-hs', "--highscore", help="Reset all scores", action='store_true')
 args = parser.parse_args()
 
-with open(configfile) as file:
+with open(statsfile) as file:
     data = json.load(file)
 
 if args.reset:
-    data['highscore'] = [0, 0, 0, 0, 0]
-    data['playtime'] = 0
-    with open(configfile, w) as file:
-        json.dump(data, file, indent=4)
-    print("Data has been reset to default")
-    quit()
+    if input("ARE YOU COMPLETELY SURE? (y/N): ").lower().strip() == "y":
+        data['highscore'] = [0, 0, 0, 0, 0]
+        data['playtime'] = 0
+        with open(statsfile, 'w') as file:
+            json.dump(data, file, indent=4)
+        print("Data has been reset to default")
+        quit()
+    else:
+        print("Operation Cancelled")
+        quit()
     
 
 if args.help:
@@ -49,10 +54,22 @@ def get_script_uptime():
         uptime = int(uptime)
     return uptime
 
+def new_highscore(score=0):
+    index = 0
+    for section in data['highscore']:
+        if score >= section:
+            return index
+            break
+        index += 1
+    return None
+            
+
 class App():
     def __init__(self):
         pyxel.init(60, 60, title="PySnake", fps=20)
+        self.tmphigh = []
         self.menu = True
+        self.newhigh = False
         self.restart = False
         self.funnymsg = 1000
         self.tail = []
@@ -83,9 +100,9 @@ class App():
         # Controls that should not be disabled at death:
         if pyxel.btnp(pyxel.KEY_Q):
             uptime = get_script_uptime()
-            playtime = data['playtime'] + uptime
+            playtime = data['playtime'] + int(uptime)
             data['playtime'] = playtime
-            with open(configfile, "w") as file:
+            with open(statsfile, "w") as file:
                 json.dump(data, file, indent=4)
             pyxel.quit()
         elif pyxel.btnp(pyxel.KEY_R) and not self.menu:
@@ -103,8 +120,10 @@ class App():
         if self.restart:
             pyxel.stop()
             pyxel.playm(0, loop=True)
+            self.tmphigh = []
             self.x = 0
             self.y = 0
+            self.newhigh = False
             self.death = False
             self.tail = []
             self.restart = False
@@ -198,6 +217,18 @@ class App():
                     if not self.death:
                         self.funnymsg = random.randrange(0, 1000)
                         pyxel.stop()
+                        isnewh = new_highscore(score=self.score)
+                        if not isnewh == None:
+                            for i in range(0, 5):
+                                self.tmphigh.append(data['highscore'][i])
+                            del self.tmphigh[4]
+                            for i in range(isnewh, 3):
+                                self.tmphigh[i + 1] = data['highscore'][i]
+                            self.tmphigh.append(data['highscore'][3])
+                            self.tmphigh[isnewh] = self.score
+                            data['highscore'] = self.tmphigh
+                            with open('statsfile', 'w') as file:
+                                json.dump(data, file, indent=4)
                         #pyxel.playm(1, loop=True)
                         pyxel.play(0, 15)
                         if self.funnymsg == 5:
@@ -209,6 +240,18 @@ class App():
                     if not self.death:
                         self.funnymsg = random.randrange(0, 1000)
                         pyxel.stop()
+                        isnewh = new_highscore(score=self.score)
+                        if not isnewh == None:
+                            for i in range(0, 5):
+                                self.tmphigh.append(data['highscore'][i])
+                            del self.tmphigh[4]
+                            for i in range(isnewh, 3):
+                                self.tmphigh[i + 1] = data['highscore'][i]
+                            self.tmphigh.append(data['highscore'][3])
+                            self.tmphigh[isnewh] = self.score
+                            data['highscore'] = self.tmphigh
+                            with open('statsfile', 'w') as file:
+                                json.dump(data, file, indent=4)
                         #pyxel.playm(1, loop=True)
                         pyxel.play(0, 15)
                         if self.funnymsg == 5:
