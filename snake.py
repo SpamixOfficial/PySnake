@@ -11,15 +11,21 @@ parser = argparse.ArgumentParser(
 parser.add_argument('-v', "--version", help="Prints the version", action='store_true')
 parser.add_argument('-h', "--help", help="Prints out this help", action='store_true')
 parser.add_argument('-r', "--reset", help="Reset all scores", action='store_true')
-parser.add_argument('-hs', "--highscore", help="Reset all scores", action='store_true')
+parser.add_argument('-hs', "--highscore", help="Show Highscore", action='store_true')
 args = parser.parse_args()
 
 with open(statsfile) as file:
     data = json.load(file)
 
-if args.reset:
+if args.help:
+    f = open("assets/help.txt", 'r')
+    contents = f.read()
+    print(f"\n{contents}\n")
+    f.close()
+    quit()
+elif args.reset:
     if input("ARE YOU COMPLETELY SURE? (y/N): ").lower().strip() == "y":
-        data['highscore'] = [0, 0, 0, 0, 0]
+        data['highscore'] = {"Spamix": 24, "John": 11, "Dummy": 6, "Cheese": 5, "Noddle": 1}
         data['playtime'] = 0
         with open(statsfile, 'w') as file:
             json.dump(data, file, indent=4)
@@ -28,13 +34,9 @@ if args.reset:
     else:
         print("Operation Cancelled")
         quit()
-    
-
-if args.help:
-    f = open("assets/help.txt", 'r')
-    contents = f.read()
-    print(f"\n{contents}\n")
-    f.close()
+elif args.highscore:
+    for i in range(0, 5):
+        print(f"{data['highscore'][i]}")
     quit()
 elif args.version:
     print(f"\nPySnake Version: v{version}\n")
@@ -54,9 +56,10 @@ def get_script_uptime():
         uptime = int(uptime)
     return uptime
 
-def new_highscore(score=0):
+def new_highscore(score=6):
+    global data
     index = 0
-    for section in data['highscore']:
+    for section in data['highscore'].values():
         if score >= section:
             return index
             break
@@ -67,6 +70,8 @@ def new_highscore(score=0):
 class App():
     def __init__(self):
         pyxel.init(60, 60, title="PySnake", fps=20)
+        self.username = "null"
+        self.highscoredata = list(data['highscore'].values())
         self.tmphigh = []
         self.menu = True
         self.newhigh = False
@@ -155,6 +160,23 @@ class App():
                         if not self.death:
                             self.funnymsg = random.randrange(0, 1000)
                             pyxel.stop()
+                            isnewh = new_highscore(score=self.score)
+                            if not isnewh == None:
+                                for i in range(0, 5):
+                                    self.tmphigh.append(self.highscoredata[i])
+                                del self.tmphigh[4]
+                                for i in range(isnewh, 3):
+                                    self.tmphigh[i + 1] = self.highscoredata[i]
+                                self.tmphigh.append(self.highscoredata[3])
+                                self.tmphigh[isnewh] = self.score
+                                i = 0
+                                del data['highscore'][list(data['highscore'].keys())[4]]
+                                for section in list(data['highscore'].keys()):
+                                    data['highscore'][section] = self.tmphigh[i]
+                                    i += 1
+                                data['highscore'][self.username] = self.tmphigh[4]
+                                with open(statsfile, 'w') as file:
+                                    json.dump(data, file, indent=4)
                             #pyxel.playm(1, loop=True)
                             pyxel.play(0, 15)
                             if self.funnymsg == 5:
@@ -220,14 +242,19 @@ class App():
                         isnewh = new_highscore(score=self.score)
                         if not isnewh == None:
                             for i in range(0, 5):
-                                self.tmphigh.append(data['highscore'][i])
+                                self.tmphigh.append(self.highscoredata[i])
                             del self.tmphigh[4]
                             for i in range(isnewh, 3):
-                                self.tmphigh[i + 1] = data['highscore'][i]
-                            self.tmphigh.append(data['highscore'][3])
+                                self.tmphigh[i + 1] = self.highscoredata[i]
+                            self.tmphigh.append(self.highscoredata[3])
                             self.tmphigh[isnewh] = self.score
-                            data['highscore'] = self.tmphigh
-                            with open('statsfile', 'w') as file:
+                            i = 0
+                            del data['highscore'][list(data['highscore'].keys())[4]]
+                            for section in list(data['highscore'].keys()):
+                                data['highscore'][section] = self.tmphigh[i]
+                                i += 1
+                            data['highscore'][self.username] = self.tmphigh[4]
+                            with open(statsfile, 'w') as file:
                                 json.dump(data, file, indent=4)
                         #pyxel.playm(1, loop=True)
                         pyxel.play(0, 15)
@@ -243,14 +270,19 @@ class App():
                         isnewh = new_highscore(score=self.score)
                         if not isnewh == None:
                             for i in range(0, 5):
-                                self.tmphigh.append(data['highscore'][i])
+                                self.tmphigh.append(self.highscoredata[i])
                             del self.tmphigh[4]
                             for i in range(isnewh, 3):
-                                self.tmphigh[i + 1] = data['highscore'][i]
-                            self.tmphigh.append(data['highscore'][3])
+                                self.tmphigh[i + 1] = self.highscoredata[i]
+                            self.tmphigh.append(self.highscoredata[3])
                             self.tmphigh[isnewh] = self.score
-                            data['highscore'] = self.tmphigh
-                            with open('statsfile', 'w') as file:
+                            i = 0
+                            del data['highscore'][list(data['highscore'].keys())[4]]
+                            for section in list(data['highscore'].keys()):
+                                data['highscore'][section] = self.tmphigh[i]
+                                i += 1
+                            data['highscore'][self.username] = self.tmphigh[4]
+                            with open(statsfile, 'w') as file:
                                 json.dump(data, file, indent=4)
                         #pyxel.playm(1, loop=True)
                         pyxel.play(0, 15)

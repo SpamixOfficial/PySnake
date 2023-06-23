@@ -1,10 +1,10 @@
 {
-    "highscore": [
-        1,
-        0,
-        0,
-        0,
-        0
-    ],
+    "highscore": {
+        "Spamix": 24,
+        "John": 11,
+        "Dummy": 6,
+        "Cheese": 5,
+        "Noddle": 1
+    },
     "playtime": 0
 }
